@@ -1,0 +1,11 @@
+version: "3"
+
+dotenv: [".env"]
+
+includes:
+  taskfile: {{ xdg.data_home }}/dasbootstrap/Taskfile.yml
+
+tasks:
+  default:
+    cmds:
+      - echo "hello"
