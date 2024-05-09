@@ -100,19 +100,6 @@
     name: hussainweb.chezmoi
   tags: molecule-notest
 
-# tasks file for /home/ansible@hettenhouser.com/.local/share/dasbootstrap/ansible/roles/technohouser.ansible
-# - name: Create Development Directory for Repos
-#   ansible.builtin.file:
-#     path: "{{ ansible_env.XDG_DATA_HOME }}/automation"
-#     state: directory
-#     mode: "0700"
-#     owner: ansible
-#     group: ansible
-
-# - name: Configure github access and clone projects
-#   ansible.builtin.import_role:
-#     name: robertdebock.roles.git
-
 - name: Disable root login by passwd
   become: true
   ansible.builtin.user:
@@ -126,4 +113,20 @@
     shell: "/home/linuxbrew/.linuxbrew/bin/zsh"
   when: ansible_facts['user_shell'] != '/home/linuxbrew/.linuxbrew/bin/zsh'
   tags: molecule-idempotence-notest
+
+- name: Copy global taskfile to home directory
+  ansible.builtin.template:
+    src: "taskfile.yaml.j2"
+    dest: "{{ ansible_env.HOME }}/Taskfile.yml"
+    mode: "0600"
+    owner: "{{ ansible.user }}"
+    group: "{{ ansible.user }}"
+
+- name: Copy global .env to home directory
+  ansible.builtin.template:
+    src: ".env.j2"
+    dest: "{{ ansible_env.HOME }}/.env"
+    mode: "0600"
+    owner: "{{ ansible.user }}"
+    group: "{{ ansible.user }}"
 # TODO: Postfix

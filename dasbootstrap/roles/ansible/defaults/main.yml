@@ -21,28 +21,14 @@ git_user_name: Jeremy Hettenhouser
 # Where to place the copies of the repositories.
 git_repository_destination: /home/{{ git_username | default('unset') }}/Documents/github.com/{{ git_username | default('unset') }}
 
-# Should git force (overwrite locally changed) clone? (Can also be controlled
-# per repository, see below.
-# git_force: yes
-# The repositories to check out, bootstrap is pinned to a version, java will get HEAD/latest.
-git_repositories:
-  - repo: "https://github.com/megabyte-labs/install.doctor.git"
-    dest: "{{ ansible_env.XDG_DATA_HOME }}/automation/install.doctor"
-    version: "master"
-    force: true
-  - repo: "https://github.com/tteck/Proxmox.git"
-    dest: "{{ ansible_env.XDG_DATA_HOME }}/automation/Proxmox"
-    version: "main"
-    force: true
-  - repo: "https://github.com/scruffaluff/bootware.git"
-    dest: "{{ ansible_env.XDG_DATA_HOME }}/automation/bootware"
-    version: "main"
-    force: true
-  - repo: "https://github.com/borland502/dasbootstrap.git"
-    dest: "{{ ansible_env.XDG_DATA_HOME }}/automation/dasbootstrap"
-    version: "main"
-    force: true
-  - repo: "https://gitea.npm.technohouser.com/jhettenh/secrets.git"
-    dest: "{{ ansible_env.HOME }}/.ansible"
-    version: "main"
-    force: true
+xdg:
+  config_home: "{{ ansible_env.HOME }}/.config"
+  cache_home: "{{ ansible_env.HOME }}/.cache"
+  data_home: "{{ ansible_env.HOME }}/.local/share"
+  state_home: "{{ ansible_env.HOME }}/.local/state"
+  bin_home: "{{ ansible_env.HOME }}/.local/bin"
+  lib_home: "{{ ansible_env.HOME }}/.local/lib"
+  data_dirs: "/usr/local/share:/usr/share:{{ xdg.data_home }}/var/lib/flatpak/exports/share:{{ xdg.data_home }}/flatpak/exports/share"
+  config_dirs: "/etc/xdg:{{ xdg.config_home}}"
+
+python_ver: "3.11"

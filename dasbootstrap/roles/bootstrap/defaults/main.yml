@@ -39,18 +39,6 @@ users_user_list:
 
 locale_timezone: America/New_York
 
-xdg:
-  config_home: "{{ ansible_env.HOME }}/.config"
-  cache_home: "{{ ansible_env.HOME }}/.cache"
-  data_home: "{{ ansible_env.HOME }}/.local/share"
-  state_home: "{{ ansible_env.HOME }}/.local/state"
-  bin_home: "{{ ansible_env.HOME }}/.local/bin"
-  lib_home: "{{ ansible_env.HOME }}/.local/lib"
-  data_dirs: "/usr/local/share:/usr/share:{{ xdg.data_home }}/var/lib/flatpak/exports/share:{{ xdg.data_home }}/flatpak/exports/share"
-  config_dirs: "/etc/xdg:{{ xdg.config_home}}"
-
-python_ver: "3.11"
-
 timesync_timezone: "America/New_York"
 timesync_ntp_hosts:
   - 0.us.pool.ntp.org
