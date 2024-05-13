@@ -127,19 +127,19 @@
   when: ansible_facts['user_shell'] != '/home/linuxbrew/.linuxbrew/bin/zsh'
   tags: molecule-idempotence-notest
 
-- name: Copy global .env to home directory
-  ansible.builtin.template:
-    src: ".env.j2"
-    dest: "/home/{{ automation_user.user }}/.env"
-    mode: "0600"
-    owner: "{{ automation_user.user }}"
-    group: "{{ automation_user.user }}"
+# - name: Copy global .env to home directory
+#   ansible.builtin.template:
+#     src: ".env.j2"
+#     dest: "/home/{{ automation_user.user }}/.env"
+#     mode: "0600"
+#     owner: "{{ automation_user.user }}"
+#     group: "{{ automation_user.user }}"
 
-- name: Copy global taskfile to home directory
-  ansible.builtin.template:
-    src: "taskfile.yaml.j2"
-    dest: "{{ ansible_env.HOME }}/Taskfile.yml"
-    mode: "0600"
-    owner: "{{ automation_user.user }}"
-    group: "{{ automation_user.user }}"
+# - name: Copy global taskfile to home directory
+#   ansible.builtin.template:
+#     src: "taskfile.yaml.j2"
+#     dest: "{{ ansible_env.HOME }}/Taskfile.yml"
+#     mode: "0600"
+#     owner: "{{ automation_user.user }}"
+#     group: "{{ automation_user.user }}"
 # TODO: Postfix
