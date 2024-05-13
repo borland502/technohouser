@@ -6,7 +6,7 @@
     sleep: 5
     timeout: 120
 
-- name: Gather facts
+- name: Get Facts
   ansible.builtin.setup:
 
 - name: Get home directory
@@ -46,7 +46,6 @@
   tags: molecule-notest
 
 - name: Install minimal Personal favorite packages for root user
-  remote_user: root
   ansible.builtin.import_role:
     name: GROG.package
   tags: molecule-idempotence-notest
@@ -89,12 +88,11 @@
     state: present
 
 - name: Create the service user account
-  remote_user: root
   ansible.builtin.user:
     name: "ansible"
     create_home: true
     shell: "{{ users_shell }}"
-    password: "{{ ansible.password }}"
+    password: "{{ automation_user.password }}"
     generate_ssh_key: true
     ssh_key_type: ed25519
     state: present
@@ -103,12 +101,22 @@
       - "ansible"
       - users
       - wheel
+  when: inventory_hostname != "automation"
   tags: molecule-idempotence-notest
+
+- name: Create the authorized keys file if it does not exist
+  ansible.builtin.file:
+    state: touch
+    mode: "0600"
+    owner: "{{ automation_user.user }}"
+    group: "{{ automation_user.user }}"
+    path: "{{ automation_user.home_dir }}/.ssh/authorized_keys"
 
 - name: Add ansible service key to authorized users file in service account
   ansible.posix.authorized_key:
-    user: "{{ ansible.user }}"
-    key: "{{ ansible.pub_key }}"
+    user: "{{ automation_user.user }}"
+    key: "{{ automation_user.pub_key }}"
+    state: present
   tags: molecule-notest
 
 - name: Ensure sudo group exists
@@ -117,7 +125,6 @@
     state: present
 
 - name: Ensure users in wheel group can sudo without password
-  remote_user: root
   ansible.builtin.copy:
     content: |
       %wheel ALL=(ALL) NOPASSWD:ALL
@@ -130,6 +137,6 @@
   ansible.builtin.user:
     name: "root"
     update_password: on_create
-    password: "{{ ansible.password }}"
+    password: "{{ automation_user.password }}"
     state: present
   tags: molecule-idempotence-notest
