@@ -1,0 +1,30 @@
+{
+ "collection_info": {
+  "namespace": "technohouser",
+  "name": "dasbootstrap",
+  "version": "1.0.0",
+  "authors": [
+   "Jeremy Hettenhouser <jhettenh@gmail.com>"
+  ],
+  "readme": "README.md",
+  "tags": [],
+  "description": "your collection description",
+  "license": [
+   "MIT"
+  ],
+  "license_file": null,
+  "dependencies": {},
+  "repository": "http://example.com/repository",
+  "documentation": "http://docs.example.com",
+  "homepage": "http://example.com",
+  "issues": "http://example.com/issue/tracker"
+ },
+ "file_manifest_file": {
+  "name": "FILES.json",
+  "ftype": "file",
+  "chksum_type": "sha256",
+  "chksum_sha256": "738d51f5f5f5640927e993ec60fe8ecaaab09ff38ca59206a26572d4fcab5ced",
+  "format": 1
+ },
+ "format": 1
+}

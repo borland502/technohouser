@@ -1,0 +1,21 @@
+version: "3"
+
+dotenv: [".env"]
+
+includes:
+  ansible:
+    taskfile: "{{ ansible.home }}/Taskfile.yml"
+    dir: "{{ ansible.home }}"
+  dbs:
+    taskfile: "{{ xdg.data_home }}/automation/dasbootstrap/Taskfile.yml"
+    dir: "{{ xdg.data_home }}/automation/dasbootstrap"
+
+tasks:
+  default:
+    cmds:
+      - |
+        command -v brew >/dev/null || { echo "brew is mandatory for this to work, please install it"; exit 1; }
+        command -v gum >/dev/null|| brew install gum
+
+        selected=$(task --list-all | grep -v "task: Available" | grep -v "default:" | gum filter --indicator="->" --placeholder="Type to search for a task...")
+        echo "$selected" | awk '{sub(/:$/, "", $2); print $2}' | xargs task

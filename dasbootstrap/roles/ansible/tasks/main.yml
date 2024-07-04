@@ -1,0 +1,122 @@
+---
+- name: Wait for connection
+  ansible.builtin.wait_for_connection:
+    connect_timeout: 5
+    delay: 10
+    sleep: 5
+    timeout: 120
+
+# work around a homebrew bug with pyenv
+# - name: Unlink pkg-config with brew (if available)
+#   register: brew_unlink
+#   command: which brew
+#   ignore_errors: true
+
+# - name: Unlink pkg-config with brew
+#   when: brew_unlink.rc == 0
+#   command: brew unlink pkg-config
+
+- name: Gather facts
+  ansible.builtin.setup:
+
+- name: Create XDG Hidden Directories
+  ansible.builtin.file:
+    recurse: true
+    path: "{{ ansible_env.HOME }}/{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - ".config"
+    - ".local/share"
+    - ".local/state"
+    - ".cache"
+  ignore_errors: true
+  tags: molecule-idempotence-notest
+
+- name: Install homebrew
+  ansible.builtin.import_role:
+    name: professormanhattan.homebrew
+  vars:
+    # noqa: var-naming[no-role-prefix]
+    user_configs:
+      - username: "{{ automation_user.user }}"
+  tags: molecule-notest
+
+- name: Install some common service / user brew packages
+  community.general.homebrew:
+    name:
+      - zsh
+      - gcc
+      - gcc@11
+      - sshpass
+      - curl
+      - git
+      - vim
+      - fzf
+      - bat
+      - zinit
+      - direnv
+      - chezmoi
+      - starship
+      - go-task
+      - fzf
+      - rg
+      - fd
+      - eza
+      - atuin
+      - prettyping
+      - rsync
+      - nmap
+      - masscan
+
+- name: Make ~/bin
+  ansible.builtin.file:
+    state: directory
+    path: "/{{ automation_user.home_dir }}/bin"
+    mode: "0750"
+    owner: "{{ automation_user.user }}"
+    group: "{{ automation_user.user }}"
+
+- name: Copy the age key over to ~/bin
+  ansible.builtin.copy:
+    content: "{{ users[0]['age_key'] }}"
+    dest: "/{{ ansible_env.HOME }}/bin/key.txt"
+    mode: "0600"
+    owner: "{{ automation_user.user }}"
+    group: "{{ automation_user.user }}"
+
+- name: Initialize the chezmoi repo and apply the configuration
+  ansible.builtin.import_role:
+    name: hussainweb.chezmoi
+  tags: molecule-notest
+
+- name: Disable root login by passwd
+  become: true
+  ansible.builtin.user:
+    name: root
+    password_lock: true
+
+- name: Switch service account to zsh
+  become: true
+  ansible.builtin.user:
+    name: "{{ automation_user.user }}"
+    shell: "/home/linuxbrew/.linuxbrew/bin/zsh"
+  when: ansible_facts['user_shell'] != '/home/linuxbrew/.linuxbrew/bin/zsh'
+  tags: molecule-idempotence-notest
+
+- name: Copy global .env to home directory
+  ansible.builtin.template:
+    src: ".env.j2"
+    dest: "/home/{{ automation_user.user }}/.env"
+    mode: "0600"
+    owner: "{{ automation_user.user }}"
+    group: "{{ automation_user.user }}"
+
+- name: Copy global taskfile to home directory
+  ansible.builtin.template:
+    src: "taskfile.yaml.j2"
+    dest: "{{ ansible_env.HOME }}/Taskfile.yml"
+    mode: "0600"
+    owner: "{{ automation_user.user }}"
+    group: "{{ automation_user.user }}"
+# TODO: Postfix

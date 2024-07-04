@@ -1,0 +1,24 @@
+---
+ansible_service_user: ansible
+
+ansible_redis_connection: localhost:6379:0
+
+ansible_chezmoi_init_url: https://github.com/borland502/dotfiles
+
+# https://galaxy.ansible.com/ui/standalone/roles/robertdebock/git/documentation/
+# defaults file for git
+
+# The system username in /home where to place the gitconfig file.
+ansible_git_username: borland502
+
+# The group to own directories.
+ansible_git_groupname: "{{ ansible_user.user }}"
+
+# Settings for git configuration.
+ansible_git_user_email: jhettenh@gmail.com
+ansible_git_user_name: Jeremy Hettenhouser
+
+# Where to place the copies of the repositories.
+ansible_git_repository_destination: /home/{{ git_username | default('unset') }}/Documents/github.com/{{ git_username | default('unset') }}
+
+ansible_python_ver: "3.11"
