@@ -4,7 +4,7 @@
     connect_timeout: 5
     delay: 10
     sleep: 5
-    timeout: 60 
+    timeout: 60
 
 - name: Gather facts
   ansible.builtin.setup:
@@ -117,4 +117,3 @@
     group: root
     dest: /etc/sudoers.d/95-sudo-group
     mode: "0644"
-

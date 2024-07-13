@@ -1,2 +1,10 @@
 ---
 # handlers file for /home/ansible@hettenhouser.com/.local/share/dasbootstrap/ansible/roles/technohouser.ansible
+
+- name: Restart ssh service
+  become: true
+  ansible.builtin.systemd_service:
+    name: ssh
+    state: restarted
+    enabled: true
+    daemon_reload: true
